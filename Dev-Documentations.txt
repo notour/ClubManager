@@ -1,0 +1,5 @@
+https://codex.wordpress.org/Developer_Documentation
+
+https://openclassrooms.com/courses/propulsez-votre-site-avec-wordpress/creer-des-plugins
+https://make.wordpress.org/core/handbook/best-practices/coding-standards/
+https://developer.wordpress.org/plugins/
