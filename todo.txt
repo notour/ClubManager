@@ -1,0 +1,11 @@
+1- Managed Evenement
+    1.1- Info (Title, Description,  Repeate, who, ..)
+    1.2- Communication campagne
+    1.3- Task list
+    1.4- Event Template
+2- Managed the auto mailing 
+3- Interconnection
+    3.1- RBIHF
+    3.2- SportPress
+    3.3- Google
+
