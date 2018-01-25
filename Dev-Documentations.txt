@@ -3,3 +3,22 @@ https://codex.wordpress.org/Developer_Documentation
 https://openclassrooms.com/courses/propulsez-votre-site-avec-wordpress/creer-des-plugins
 https://make.wordpress.org/core/handbook/best-practices/coding-standards/
 https://developer.wordpress.org/plugins/
+https://codex.wordpress.org/Writing_a_Plugin
+
+Log:
+
+Define those parameters in wp-config:
+
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_DISPLAY', false );
+define( 'WP_DEBUG_LOG', true );
+
+use function write_log define in the file dev_tool.php
+
+look log message into /wp-content/debug.log
+
+
+Databases :
+
+https://codex.wordpress.org/Database_Description
+https://codex.wordpress.org/Creating_Tables_with_Plugins

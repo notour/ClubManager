@@ -15,6 +15,8 @@ define( 'CD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once CD_PLUGIN_PATH . 'dev_tool.php';
 
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
 class PhoenixPlugin
 {
     //region Ctor
@@ -23,10 +25,14 @@ class PhoenixPlugin
      * Entry point of the plugin used to connect this one will all the wordpress entry points
      */
     public function __construct() {
-        register_activation_hook(__FILE__, array('PhoenixPlugin', 'install'));
+        register_activation_hook(__FILE__, array('PhoenixPlugin', 'activate'));
+        register_deactivation_hook( __FILE__, array('PhoenixPlugin', 'deactivate'));
+
         register_uninstall_hook(__FILE__, array('PhoenixPlugin', 'uninstall'));
 
-        add_action('admin_menu', array($this, 'add_admin_menu'), 20);
+        if (is_plugin_active( 'WPhoenix/WPhoenix.php')) {
+            add_action('admin_menu', array($this, 'add_admin_menu'), 20);
+        }
     }
 
     //endregion
@@ -42,25 +48,71 @@ class PhoenixPlugin
         add_menu_page('Phoenix Administration', 'Phoenix', 'manage_options', 'phoenix_admin_menu', array($this, 'admin_main_page'));
 
         //add_submenu_page('parent_key', 'page title', 'menu label', 'right_labels', 'key', function);
+        add_submenu_page('phoenix_admin_menu', 'Phoenix Admin', 'Global Admin', 'manage_options', 'phoenix_admin_menu', array($this, 'admin_main_page'));
+        add_submenu_page('phoenix_admin_menu', 'Phoenix Members', 'Members', 'manage_options', 'phoenix_admin_members_menu', array($this, 'admin_members_page'));
         add_submenu_page('phoenix_admin_menu', 'Phoenix Events', 'Events', 'manage_options', 'phoenix_admin_event_menu', array($this, 'admin_event_page'));
         add_submenu_page('phoenix_admin_menu', 'Phoenix Entities', 'Entities', 'manage_options', 'phoenix_admin_entities_menu', array($this, 'admin_entities_page'));
+        add_submenu_page('phoenix_admin_menu', 'Phoenix Settings', 'Plugin Settings', 'manage_options', 'phoenix_admin_settings_menu', array($this, 'admin_settings_page'));
+    }
+
+    /**
+     * call to install triggers and setup connexion with the word press API
+     */
+    public static function activate() {
+
+        /** Install config and databases if needed */
+        PhoenixPlugin::install();
+
+        /** Activate connexion with wordpress API */
+        write_log('Plugin Activate');
+    }
+
+    /**
+     * call to install remove connexion with the word press API
+     */
+    public static function deactivate() {
+        write_log('Plugin deactivate');
     }
 
     /**
      * Called to install the current plugin configuration and databases
      */
     public static function install() {
+        write_log('Plugin install');
 
+        require_once CD_PLUGIN_PATH . '/includes/db_tools.php';
+
+        $db_path = CD_PLUGIN_PATH . 'db/install';
+        $db_script_dir = $db_path;
+        $db_script_version = '0.0.0';
+
+        $install_versions = scandir($db_path, SCANDIR_SORT_DESCENDING);
+
+        foreach ($install_versions as $version) {
+            $db_path_version = $db_path . '/' . $version . '/';
+            if (file_exists($db_path_version . DB_CREATE_FILE_NAME)) {
+                $db_script_dir = $db_path_version;
+                $db_script_version = $version;
+                break;
+            }
+        }
+
+        WPhoenixDBTools::install_if_needed($db_script_dir, $db_script_version, DB_TABLE_LIST);
     }
 
     /**
      * Called to uninstall the current plugin configuration and databases
      */
     public static function uninstall() {
+        write_log('Plugin uninstall');
 
     }
 
     //region HTML
+
+    public function admin_members_page() {
+        echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/members.tpl.php', []);
+    }
 
     public function admin_main_page() {
         echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/admin.tpl.php', []);
@@ -71,6 +123,10 @@ class PhoenixPlugin
     }
 
     public function admin_entities_page() {
+        echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/entities.tpl.php', []);
+    }
+
+    public function admin_settings_page() {
         echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/entities.tpl.php', []);
     }
 

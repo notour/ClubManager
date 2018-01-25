@@ -1,3 +1,5 @@
+0- Members
+    0.1- Link word press profile to phoenix profile
 1- Managed Evenement
     1.1- Info (Title, Description,  Repeate, who, ..)
     1.2- Communication campagne
@@ -8,4 +10,3 @@
     3.1- RBIHF
     3.2- SportPress
     3.3- Google
-
