@@ -97,7 +97,7 @@ class PhoenixPlugin
             }
         }
 
-        WPhoenixDBTools::install_if_needed($db_script_dir, $db_script_version, DB_TABLE_LIST);
+        WPhoenixDBTools::install_if_needed($db_script_dir, $db_script_version, DB_TABLE_LIST, TRUE);
     }
 
     /**

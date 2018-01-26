@@ -3,7 +3,17 @@
 define('DB_CREATE_FILE_NAME', 'create_db.sql');
 define('DB_MIGRATE_FILE_NAME', 'migration_from_<VERSION>.sql');
 
-define('DB_TABLE_LIST', array('members'));
+define('DB_TABLE_LIST', array(
+    'contact_info',
+    'members',
+    'referent',
+    'member_referents',
+    'entity',
+    'entity_referents',
+    'season',
+    'category',
+    'category_members'
+));
 
 /**
  * static class that host tools around db manipulation
