@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA;;GAEG;ACFH;;GAEG;ADKH,aAAc;EACV,UAAU,ECJC,IAAI",
+"sources": ["../sass/layout.scss","../sass/partials/_constantes.scss"],
+"names": [],
+"file": "layout.css"
+}

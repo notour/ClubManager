@@ -1,0 +1,10 @@
+/**
+ * Define the style layouts
+ */
+
+@import './partials/_constantes.scss';
+@import './partials/_colors.scss';
+
+.table_header {
+    min-height: $table_header;
+}

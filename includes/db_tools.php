@@ -1,25 +1,41 @@
 <?php
 
+require_once plugin_dir_path( __FILE__ ) . '../wphoenix_const.php';
+
+require_once CD_PLUGIN_MODEL_PATH . 'member.php';
+
 define('DB_CREATE_FILE_NAME', 'create_db.sql');
 define('DB_MIGRATE_FILE_NAME', 'migration_from_<VERSION>.sql');
 
-define('DB_TABLE_LIST', array(
-    'contact_info',
-    'members',
-    'referent',
-    'member_referents',
-    'entity',
-    'entity_referents',
-    'season',
-    'category',
-    'category_members'
-));
+// define('DB_TABLE_LIST', array(
+//     'contact_info',
+//     Member::TABLE_NAME,
+//     'referent',
+//     'member_referents',
+//     'entity',
+//     'entity_referents',
+//     'season',
+//     'category',
+//     'category_members'
+// ));
 
 /**
  * static class that host tools around db manipulation
  */
 class WPhoenixDBTools
 {
+    //region Properties
+
+    /**
+     * 
+     */
+    public static function get_prefix() {
+        global $wpdb;
+        return $wpdb->prefix . 'wphoenix';
+    }
+
+    //endregion Properties
+
     //region Methods
 
     /**
@@ -44,7 +60,7 @@ class WPhoenixDBTools
     public static function install_if_needed($script_dir, $script_version, array $table_list, $force_install = FALSE) {
         global $wpdb;
 
-        $wphoenix_prefix = $wpdb->prefix . 'wphoenix';
+        $wphoenix_prefix = WPhoenixDBTools::get_prefix(); //$wpdb->prefix . 'wphoenix';
         $charset_collate = $wpdb->get_charset_collate();
 
         write_log('Prefix ' . $wphoenix_prefix);
@@ -112,6 +128,61 @@ class WPhoenixDBTools
         }
         return FALSE;
     }
+
+    /**
+     * Apply a simple select query on one table 
+     */
+    public static function select_query_items($desc, $columns, $where = NULL) {
+        global $wpdb;
+
+        $prefix = WPhoenixDBTools::get_prefix();
+        $table_name = $desc->table_name;
+        
+        $table_alias = 't';
+        if (isset($desc->table_alias) && !empty($desc->table_alias)) {
+            $table_alias = $desc->table_alias;
+        }
+
+        $ids = WPhoenixDBTools::generate_columns($desc, $columns, $table_alias);
+        $query = "SELECT $ids FROM {$prefix}_$table_name as $table_alias";
+        if (empty($where) == NULL) {
+            $query = $query . ' WHERE ' . $where;
+        }
+        return $wpdb->get_results($query , OBJECT );
+    }
+
+    /**
+     * return all the item ids of the table describe in $desc that follow the condition $where
+     */
+    public static function query_item_ids($desc, $where = NULL) {
+        return WPhoenixDBTools::query_items($desc, $desc->ids, $where);
+    }
+
+    //region tools
+
+    /**
+     * Concate all the id keys provide by the description
+     * 
+     * @param class $desc
+     *      db table descriptions
+     * 
+     * @return string concatenation of the ids example : 'cli_id, cli_id2'
+     */
+    private static function generate_columns($desc, $columns, $table_alias) {
+        $cols = '';
+        $first = true;
+        foreach ($columns as $col_name) {
+            if ($first == FALSE) {
+                $cols = $cols . ', ';
+            }
+
+            $cols = $cols . $table_alias . '.' . $col_name;
+            $first = FALSE;
+        }
+        return $cols;
+    }
+
+    //endregion tools
 
     //endregion Methods    
 }

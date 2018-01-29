@@ -9,15 +9,14 @@ Author URI: http://phoenixhockey.be/
 License: GPL2
 */
 
-define( 'CD_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'CD_PLUGIN_TEMPLATE_PATH', plugin_dir_path( __FILE__ ) . '/templates/' ) ;
-define( 'CD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+require_once plugin_dir_path( __FILE__ ) . 'wphoenix_const.php';
 
-require_once CD_PLUGIN_PATH . 'dev_tool.php';
+require_once CD_PLUGIN_TOOLS_PATH . 'dev_tool.php';
+require_once CD_PLUGIN_INCLUDES_PATH . 'member_mngt.php';
 
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-class PhoenixPlugin
+final class PhoenixPlugin
 {
     //region Ctor
 
@@ -97,7 +96,19 @@ class PhoenixPlugin
             }
         }
 
-        WPhoenixDBTools::install_if_needed($db_script_dir, $db_script_version, DB_TABLE_LIST, TRUE);
+        $db_table_list = array(
+            'contact_info',
+            Member::TABLE_NAME,
+            'referent',
+            'member_referents',
+            'entity',
+            'entity_referents',
+            'season',
+            'category',
+            'category_members'
+        );
+
+        WPhoenixDBTools::install_if_needed($db_script_dir, $db_script_version, $db_table_list);
     }
 
     /**
@@ -111,6 +122,9 @@ class PhoenixPlugin
     //region HTML
 
     public function admin_members_page() {
+        $page_number = get_query_var( 'page_num', 1);
+        $member_search = get_query_var( 'search', '%');
+        $data['members'] = MemberMngt::load_members($page_number, $member_search);
         echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/members.tpl.php', []);
     }
 
