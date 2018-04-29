@@ -2,6 +2,8 @@
 
 interface IDBHandler
 {
+    const Traits = "IDBHandler";
+
     //region Methods
 
     /**
