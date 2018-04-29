@@ -121,7 +121,7 @@ final class ClubManager
             'category_members'
         );
 
-        WClubManagerDBTools::install_if_needed($db_script_dir, $db_script_version, $db_table_list);
+        CMDBTools::install_if_needed($db_script_dir, $db_script_version, $db_table_list);
     }
 
     /**

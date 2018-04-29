@@ -28,6 +28,7 @@ class CMDBTools implements IDBHandler
 {
     //region Fields
 
+    private $ioc_container;
     private $configured_prefix;
 
     //endregion Fields
@@ -40,6 +41,7 @@ class CMDBTools implements IDBHandler
     public function __constructor(IIocContainer $container) {
         require_once CD_PLUGIN_CONFIG_PATH . 'config_keys.php';
         
+        $this->ioc_container = $container;
         $this->configured_prefix = $container->get_config(DB_PREFIX);
     }
 

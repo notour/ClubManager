@@ -12,7 +12,8 @@ final class IocContainer implements IIocContainer
 {
     //region Fields
 
-    private $local_config;
+    private $_instances;
+    private $_local_config;
 
     //endregion Fields
 
@@ -27,19 +28,21 @@ final class IocContainer implements IIocContainer
      */
     function __construct($extra_custom_config = null) {
 
-        $this->local_config = new stdclass();
+        $this->_local_config = new stdclass();
         $configs = $GLOBALS['configs'];
 
         foreach ($configs as $key => $value) {
-            $this->local_config->{$key} = $value;
+            $this->_local_config->{$key} = $value;
         }
 
         if (empty($extra_custom_config) == null)
         {
             foreach ($extra_custom_config as $key => $value) {
-                $this->local_config->{$key} = $value;
+                $this->_local_config->{$key} = $value;
             }
         }
+
+        $this->_instances = new stdclass();
     }
 
     //endregion Ctor
@@ -54,8 +57,43 @@ final class IocContainer implements IIocContainer
      *      NULL if the key doesn't exist
      */
     public function get_config(string $config_key) {
-        if (isset($this->local_config->{$config_key}))
-            return $this->local_config->{$config_key};
+        if (isset($this->_local_config->{$config_key}))
+            return $this->_local_config->{$config_key};
+        return NULL;
+    }
+
+    /**
+     * Store the instance associate to the specific key
+     * 
+     * @param string $key
+     *      unique key used to store the instance
+     * 
+     * @param object $instance
+     *      instance to store
+     * 
+     * @return boolean return true if the storage succeed; false if a instance have already been store for the specific key
+     */
+    public function store(string $key, $instance) {
+        if ($instance == NULL ||
+            empty($key) ||
+            isset($this->_instances->{$key}))
+            return FALSE;
+        $this->_instances->{$key} = $instance;
+        return TRUE;
+    }
+
+    /**
+     * Gets the specific instance store to$by the specific $Key
+     * 
+     * @param string $key
+     *      unique $key used to store and retreive a specific instance
+     * 
+     * @return object instance
+     *      return the specific instance associate to the specific key; if the key doesn't existing return NULL
+     */
+    public function get(string $key) {
+        if (isset($this->_instances->{$key}))
+            return $this->_instances->{$key};
         return NULL;
     }
 
