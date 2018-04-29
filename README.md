@@ -1,2 +1,2 @@
-# WPhoenix
-Wordpres plugin to improve the phoenix inline hockey club management
+# Club Manager
+Wordpres plugin to help club to easily managed theire member and activities
