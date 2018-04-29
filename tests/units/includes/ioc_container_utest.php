@@ -22,7 +22,7 @@ namespace tests\units
      * Unit test on <see cref="\IocContainer" />
      */
     class IocContainer extends atoum\test {
-        
+    
         //region Create
 
         /**

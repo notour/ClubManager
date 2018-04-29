@@ -6,6 +6,8 @@
  */
 interface IIocContainer {
 
+    const Traits  = "IIocContainer";
+
     /**
      * Get the config value as setup in the /config/default.php file
      * 
@@ -14,7 +16,7 @@ interface IIocContainer {
      *      NULL if the key doesn't exist
      */
     public function get_config(string $config_key);
-
+    
     /**
      * Store the instance associate to the specific key
      * 
