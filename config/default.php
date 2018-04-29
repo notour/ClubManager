@@ -16,4 +16,5 @@ $configs[DB_PREFIX] = 'ClubManager';
 
 //endregion DB
 
-include_once CD_PLUGIN_CONFIG_PATH . 'localconfig.php';
+if(file_exists(CD_PLUGIN_CONFIG_PATH . 'localconfig.php'))
+    include_once CD_PLUGIN_CONFIG_PATH . 'localconfig.php';
