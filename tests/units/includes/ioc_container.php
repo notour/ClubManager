@@ -9,15 +9,17 @@ use mageekguy\atoum;
 /**
  * Class tested
  */
-require_once CD_PROJECT_PATH . 'classes/ioc_container.class.php';
+require_once CD_PROJECT_PATH . 'includes/ioc_container.class.php';
 
-
+/**
+ * Unit test on <see cref="IocContainer" />
+ */
 class IocContainer extends atoum\test {
     
     /**
      * Test to simple create a new instance of the <see cref="IocContainer" />
      */
-    public function IocContainer_Create() {
+    public function testIocContainer_Create() {
         $ioc = new IocContainer();
 
         $this
@@ -32,7 +34,7 @@ class IocContainer extends atoum\test {
         /**
      * Test to simple create a new instance of the <see cref="IocContainer" />
      */
-    public function IocContainer_Create_Multiple() {
+    public function testIocContainer_Create_Multiple() {
         $ioc = new IocContainer();
         $ioc2 = new IocContainer();
         $ioc3 = new IocContainer();
