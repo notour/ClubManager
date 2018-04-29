@@ -1,13 +1,13 @@
 <?php
 
-require_once plugin_dir_path( __FILE__ ) . '../wphoenix_const.php';
+require_once dirname( __FILE__ ) . '/../clubmanager_const.php';
 require_once CD_PLUGIN_MODEL_PATH . 'base_model.php';
 require_once CD_PLUGIN_MODEL_PATH . 'table_descriptor.php';
 
 /**
  * Member class model
  */
-final class Member extends BaseModel{
+final class Member extends BaseModel {
 
     //region fields
 

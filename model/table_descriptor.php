@@ -1,6 +1,6 @@
 <?php 
 
-require_once plugin_dir_path( __FILE__ ) . '../wphoenix_const.php';
+require_once dirname( __FILE__ ) . '/../clubmanager_const.php';
 require_once CD_PLUGIN_INCLUDES_PATH . 'base_class.php';
 
 /**

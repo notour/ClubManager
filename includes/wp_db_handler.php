@@ -1,6 +1,6 @@
 <?php
 
-require_once plugin_dir_path( __FILE__ ) . '../clubmanager_const.php';
+require_once dirname( __FILE__ ) . '/../clubmanager_const.php';
 
 require_once CD_PLUGIN_INTERFACES_PATH . 'idb_handler.php';
 require_once CD_PLUGIN_MODEL_PATH . 'member.php';
@@ -24,12 +24,13 @@ define('DB_MIGRATE_FILE_NAME', 'migration_from_<VERSION>.sql');
 /**
  * static class that host tools around db manipulation
  */
-class CMDBTools implements IDBHandler
+class WPDBHandler implements IDBHandler
 {
     //region Fields
 
-    private $ioc_container;
-    private $configured_prefix;
+    private $_wpdb;
+    private $_ioc_container;
+    private $_configured_prefix;
 
     //endregion Fields
 
@@ -38,11 +39,12 @@ class CMDBTools implements IDBHandler
     /**
      * Initialize a new instance of the class <see cref="CMDBTools" />
      */
-    public function __constructor(IIocContainer $container) {
+    public function __construct(IIocContainer $container, $wpdbInst) {
         require_once CD_PLUGIN_CONFIG_PATH . 'config_keys.php';
         
-        $this->ioc_container = $container;
-        $this->configured_prefix = $container->get_config(DB_PREFIX);
+        $this->_wpdb = $wpdbInst;
+        $this->_ioc_container = $container;
+        $this->_configured_prefix = $container->get_config(DB_PREFIX);
     }
 
     //endregion Ctor
@@ -53,8 +55,7 @@ class CMDBTools implements IDBHandler
      * Gets the prefix of all the db tables
      */
     public function get_prefix() {
-        global $wpdb;
-        return $wpdb->prefix . $this->configured_prefix;
+        return $this->_wpdb->prefix . $this->_configured_prefix;
     }
 
     //endregion Properties
@@ -81,10 +82,9 @@ class CMDBTools implements IDBHandler
      *      True if the tables have been installed; otherwise FALSE
      */
     public function install_if_needed($script_dir, $script_version, array $table_list, $force_install = FALSE) {
-        global $wpdb;
 
         $db_prefix = $this->get_prefix();
-        $charset_collate = $wpdb->get_charset_collate();
+        $charset_collate = $this->_wpdb->get_charset_collate();
 
         write_log('Prefix ' . $db_prefix);
         write_log('charset_collate ' . $charset_collate);
@@ -97,7 +97,7 @@ class CMDBTools implements IDBHandler
         }
 
         if ($force_install == FALSE) {
-            $tables = $wpdb->get_var("SHOW TABLES LIKE '$db_prefix%'");
+            $tables = $this->_wpdb->get_var("SHOW TABLES LIKE '$db_prefix%'");
 
             if (count($tables) == count($table_list)) {
                 foreach($table_list as $table_name) {
@@ -156,8 +156,6 @@ class CMDBTools implements IDBHandler
      * Apply a simple select query on one table 
      */
     public function select_query_items($desc, $columns, $where = NULL) {
-        global $wpdb;
-
         $prefix = $this->get_prefix();
         $table_name = $desc->table_name;
         
@@ -171,7 +169,7 @@ class CMDBTools implements IDBHandler
         if (empty($where) == NULL) {
             $query = $query . ' WHERE ' . $where;
         }
-        return $wpdb->get_results($query , OBJECT );
+        return $this->_wpdb->get_results($query , OBJECT );
     }
 
     /**

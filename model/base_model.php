@@ -1,7 +1,10 @@
 <?php
 
-require_once plugin_dir_path( __FILE__ ) . '..//wphoenix_const.php';
-require_once CD_PLUGIN_INCLUDES_PATH . 'db_tools.php';
+require_once dirname( __FILE__ ) . '/../clubmanager_const.php';
+
+require_once CD_PLUGIN_INTERFACES_PATH . 'iioc_container.php';
+require_once CD_PLUGIN_INTERFACES_PATH . 'idb_handler.php';
+
 require_once CD_PLUGIN_INCLUDES_PATH . 'base_class.php';
 
 require_once CD_PLUGIN_MODEL_PATH . 'table_descriptor.php';
@@ -12,7 +15,6 @@ require_once CD_PLUGIN_MODEL_PATH . 'table_descriptor.php';
 abstract class BaseModel extends BaseClass {
 
     //region fields
-
     //endregion fields
 
     //region ctor
@@ -39,12 +41,15 @@ abstract class BaseModel extends BaseClass {
     /**
      * select all the elements in the database
      */
-    public static function select_all() {
+    public static function select_all(IIocContainer $ioc) {
+
+        $db_handler = $ioc->get(IDBHandler::Traits);
+
         $caller_class = get_called_class();
         $desc = $caller_class::_get_table_descriptor();
 
         //select_all_items($desc, $table_alias, $where)
-        $items_row_data = WPhoenixDBTools::select_query_items($desc, $desc->columns);
+        $items_row_data = $db_handler->select_query_items($desc, $desc->columns);
 
         $items = array();
         foreach ($items_row_data as $row) {
@@ -54,7 +59,7 @@ abstract class BaseModel extends BaseClass {
         return $items;
     }
 
-    public static function select_by_id($id) {
+    public static function select_by_id(IIocContainer $ioc, guid $id) {
         throw new Exception('Not implemented : select_by_id ' . self);
     }
 
