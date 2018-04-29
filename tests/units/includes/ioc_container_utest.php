@@ -57,7 +57,7 @@ class IocContainer extends atoum\test {
      */
     public function testIocContainer_getConfig() {
         $key = 'TEST_KEY';
-        $val = \random_int(0, 4242);
+        $val = \rand(0, 4242);
 
         $config = array( $key  => $val );
 
@@ -71,7 +71,7 @@ class IocContainer extends atoum\test {
 
         do
         {
-            $newValue = \random_int(0, 4242);
+            $newValue = \rand(0, 4242);
         } while($newValue == $result);
 
         $config[$key] = $newValue;
@@ -90,7 +90,7 @@ class IocContainer extends atoum\test {
      * Test if we can retreive data from the config
      */
     public function testIocContainer_getConfig_unknown_key() {
-        $val = "key" . \random_int(0, 4242);
+        $val = "key" . \rand(0, 4242);
         $ioc = new \IocContainer();
 
         $result = $ioc->get_config($val);
