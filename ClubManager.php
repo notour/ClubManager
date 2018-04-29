@@ -1,22 +1,22 @@
 <?php
 /*
-Plugin Name: Phoenix Administration
-Plugin URI: http://phoenixhockey.be/
-Description: This plugin will provide helper to managed the phoenix administration and daily life
+Plugin Name: Club Manager
+Plugin URI: https://github.com/notour/ClubManager
+Description: This plugin will provide helper to managed a club administration and daily life
 Version: 0.1
 Author: Mickael Thumerel
-Author URI: http://phoenixhockey.be/
+Author URI: http://ClubManagerhockey.be/
 License: GPL2
 */
 
-require_once plugin_dir_path( __FILE__ ) . 'wphoenix_const.php';
+require_once plugin_dir_path( __FILE__ ) . 'wClubManager_const.php';
 
 require_once CD_PLUGIN_TOOLS_PATH . 'dev_tool.php';
 require_once CD_PLUGIN_INCLUDES_PATH . 'member_mngt.php';
 
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-final class PhoenixPlugin
+final class ClubManager
 {
     //region Ctor
 
@@ -24,12 +24,12 @@ final class PhoenixPlugin
      * Entry point of the plugin used to connect this one will all the wordpress entry points
      */
     public function __construct() {
-        register_activation_hook(__FILE__, array('PhoenixPlugin', 'activate'));
-        register_deactivation_hook( __FILE__, array('PhoenixPlugin', 'deactivate'));
+        register_activation_hook(__FILE__, array('ClubManager', 'activate'));
+        register_deactivation_hook( __FILE__, array('ClubManager', 'deactivate'));
 
-        register_uninstall_hook(__FILE__, array('PhoenixPlugin', 'uninstall'));
+        register_uninstall_hook(__FILE__, array('ClubManager', 'uninstall'));
 
-        if (is_plugin_active( 'WPhoenix/WPhoenix.php')) {
+        if (is_plugin_active( 'ClubManager/ClubManager.php')) {
             add_action('admin_menu', array($this, 'add_admin_menu'), 20);
         }
     }
@@ -44,14 +44,14 @@ final class PhoenixPlugin
     public function add_admin_menu() {
         //add_menu_page('page title', 'menu label', 'right_labels', 'key', function, icon(default), order(default));
 
-        add_menu_page('Phoenix Administration', 'Phoenix', 'manage_options', 'phoenix_admin_menu', array($this, 'admin_main_page'));
+        add_menu_page('ClubManager Administration', 'ClubManager', 'manage_options', 'ClubManager_admin_menu', array($this, 'admin_main_page'));
 
         //add_submenu_page('parent_key', 'page title', 'menu label', 'right_labels', 'key', function);
-        add_submenu_page('phoenix_admin_menu', 'Phoenix Admin', 'Global Admin', 'manage_options', 'phoenix_admin_menu', array($this, 'admin_main_page'));
-        add_submenu_page('phoenix_admin_menu', 'Phoenix Members', 'Members', 'manage_options', 'phoenix_admin_members_menu', array($this, 'admin_members_page'));
-        add_submenu_page('phoenix_admin_menu', 'Phoenix Events', 'Events', 'manage_options', 'phoenix_admin_event_menu', array($this, 'admin_event_page'));
-        add_submenu_page('phoenix_admin_menu', 'Phoenix Entities', 'Entities', 'manage_options', 'phoenix_admin_entities_menu', array($this, 'admin_entities_page'));
-        add_submenu_page('phoenix_admin_menu', 'Phoenix Settings', 'Plugin Settings', 'manage_options', 'phoenix_admin_settings_menu', array($this, 'admin_settings_page'));
+        add_submenu_page('ClubManager_admin_menu', 'ClubManager Admin', 'Global Admin', 'manage_options', 'clubManager_admin_menu', array($this, 'admin_main_page'));
+        add_submenu_page('ClubManager_admin_menu', 'ClubManager Members', 'Members', 'manage_options', 'clubManager_admin_members_menu', array($this, 'admin_members_page'));
+        add_submenu_page('ClubManager_admin_menu', 'ClubManager Events', 'Events', 'manage_options', 'clubManager_admin_event_menu', array($this, 'admin_event_page'));
+        add_submenu_page('ClubManager_admin_menu', 'ClubManager Entities', 'Entities', 'manage_options', 'clubManager_admin_entities_menu', array($this, 'admin_entities_page'));
+        add_submenu_page('ClubManager_admin_menu', 'ClubManager Settings', 'Plugin Settings', 'manage_options', 'clubManager_admin_settings_menu', array($this, 'admin_settings_page'));
     }
 
     /**
@@ -60,7 +60,7 @@ final class PhoenixPlugin
     public static function activate() {
 
         /** Install config and databases if needed */
-        PhoenixPlugin::install();
+        ClubManager::install();
 
         /** Activate connexion with wordpress API */
         write_log('Plugin Activate');
@@ -108,7 +108,7 @@ final class PhoenixPlugin
             'category_members'
         );
 
-        WPhoenixDBTools::install_if_needed($db_script_dir, $db_script_version, $db_table_list);
+        WClubManagerDBTools::install_if_needed($db_script_dir, $db_script_version, $db_table_list);
     }
 
     /**
@@ -149,4 +149,4 @@ final class PhoenixPlugin
     //endregion
 }
 
-new PhoenixPlugin();
+new ClubManager();
