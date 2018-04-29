@@ -2,7 +2,9 @@
 
 require_once plugin_dir_path( __FILE__ ) . '../clubmanager_const.php';
 
+require_once CD_PLUGIN_INTERFACES_PATH . 'idb_handler.php';
 require_once CD_PLUGIN_MODEL_PATH . 'member.php';
+require_once CD_PLUGIN_INTERFACES_PATH . 'iioc_container.php';
 
 define('DB_CREATE_FILE_NAME', 'create_db.sql');
 define('DB_MIGRATE_FILE_NAME', 'migration_from_<VERSION>.sql');
@@ -22,16 +24,35 @@ define('DB_MIGRATE_FILE_NAME', 'migration_from_<VERSION>.sql');
 /**
  * static class that host tools around db manipulation
  */
-class WPhoenixDBTools
+class CMDBTools implements IDBHandler
 {
+    //region Fields
+
+    private $configured_prefix;
+
+    //endregion Fields
+
+    //region Ctor
+
+    /**
+     * Initialize a new instance of the class <see cref="CMDBTools" />
+     */
+    public function __constructor(IIocContainer $container) {
+        require_once CD_PLUGIN_CONFIG_PATH . 'config_keys.php';
+        
+        $this->configured_prefix = $container->get_config(DB_PREFIX);
+    }
+
+    //endregion Ctor
+
     //region Properties
 
     /**
-     * 
+     * Gets the prefix of all the db tables
      */
-    public static function get_prefix() {
+    public function get_prefix() {
         global $wpdb;
-        return $wpdb->prefix . 'wphoenix';
+        return $wpdb->prefix . $this->configured_prefix;
     }
 
     //endregion Properties
@@ -57,13 +78,13 @@ class WPhoenixDBTools
      * @return bool
      *      True if the tables have been installed; otherwise FALSE
      */
-    public static function install_if_needed($script_dir, $script_version, array $table_list, $force_install = FALSE) {
+    public function install_if_needed($script_dir, $script_version, array $table_list, $force_install = FALSE) {
         global $wpdb;
 
-        $wphoenix_prefix = WPhoenixDBTools::get_prefix(); //$wpdb->prefix . 'wphoenix';
+        $db_prefix = $this->get_prefix();
         $charset_collate = $wpdb->get_charset_collate();
 
-        write_log('Prefix ' . $wphoenix_prefix);
+        write_log('Prefix ' . $db_prefix);
         write_log('charset_collate ' . $charset_collate);
 
         $current_db_version = get_option('WPhoenix_db_version');
@@ -74,7 +95,7 @@ class WPhoenixDBTools
         }
 
         if ($force_install == FALSE) {
-            $tables = $wpdb->get_var("SHOW TABLES LIKE '$wphoenix_prefix%'");
+            $tables = $wpdb->get_var("SHOW TABLES LIKE '$db_prefix%'");
 
             if (count($tables) == count($table_list)) {
                 foreach($table_list as $table_name) {
@@ -104,7 +125,7 @@ class WPhoenixDBTools
             $migration_script_path = $script_dir . str_replace('<VERSION>', $current_db_version, DB_MIGRATE_FILE_NAME); //'migration_from_' . $current_db_version . '.sql';
             if (file_exists($migration_script_path)) {
                 $migration_sql = file_get_contents($migration_script_path);
-                $migration_sql = str_replace('<PREFIX>', $wphoenix_prefix, $migration_sql);
+                $migration_sql = str_replace('<PREFIX>', $db_prefix, $migration_sql);
                 $migration_sql = str_replace('<CHARSET_COLLATE>', $charset_collate, $migration_sql);
                 write_log('Execute migration query : ' . $migration_sql);
                 dbDelta($migration_sql);
@@ -115,12 +136,12 @@ class WPhoenixDBTools
             }
 
             $install_sql = file_get_contents($install_script_path);
-            $install_sql = str_replace('<PREFIX>', $wphoenix_prefix, $install_sql);
+            $install_sql = str_replace('<PREFIX>', $db_prefix, $install_sql);
             $install_sql = str_replace('<CHARSET_COLLATE>', $charset_collate, $install_sql);
             dbDelta($install_sql);
             write_log('Execute install query : ' . $install_sql);
 
-            add_option('WPhoenix_db_version', $script_version);
+            add_option('ClubManager_db_version', $script_version);
             return TRUE;
         }
         else {
@@ -132,10 +153,10 @@ class WPhoenixDBTools
     /**
      * Apply a simple select query on one table 
      */
-    public static function select_query_items($desc, $columns, $where = NULL) {
+    public function select_query_items($desc, $columns, $where = NULL) {
         global $wpdb;
 
-        $prefix = WPhoenixDBTools::get_prefix();
+        $prefix = $this->get_prefix();
         $table_name = $desc->table_name;
         
         $table_alias = 't';
@@ -143,7 +164,7 @@ class WPhoenixDBTools
             $table_alias = $desc->table_alias;
         }
 
-        $ids = WPhoenixDBTools::generate_columns($desc, $columns, $table_alias);
+        $ids = CMDBTools::generate_columns($desc, $columns, $table_alias);
         $query = "SELECT $ids FROM {$prefix}_$table_name as $table_alias";
         if (empty($where) == NULL) {
             $query = $query . ' WHERE ' . $where;
@@ -154,8 +175,8 @@ class WPhoenixDBTools
     /**
      * return all the item ids of the table describe in $desc that follow the condition $where
      */
-    public static function query_item_ids($desc, $where = NULL) {
-        return WPhoenixDBTools::query_items($desc, $desc->ids, $where);
+    public function query_item_ids($desc, $where = NULL) {
+        return $this->query_items($desc, $desc->ids, $where);
     }
 
     //region tools

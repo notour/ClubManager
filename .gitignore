@@ -17,3 +17,4 @@ resources/sass/.sass-cache/
 /sitemap.xml
 /sitemap.xml.gz
 
+/config/localconfig.php

@@ -1,21 +1,25 @@
 <?php
-/*
+/**
 Plugin Name: Club Manager
 Plugin URI: https://github.com/notour/ClubManager
 Description: This plugin will provide helper to managed a club administration and daily life
 Version: 0.1
 Author: Mickael Thumerel
-Author URI: http://ClubManagerhockey.be/
+Author URI: http://Phoenixhockey.be/
 License: GPL2
 */
 
-require_once plugin_dir_path( __FILE__ ) . 'wClubManager_const.php';
+require_once dirname( __FILE__ ) . '/clubmanager_const.php';
 
 require_once CD_PLUGIN_TOOLS_PATH . 'dev_tool.php';
 require_once CD_PLUGIN_INCLUDES_PATH . 'member_mngt.php';
+require_once CD_PLUGIN_INCLUDES_PATH . 'ioc_container.php';
 
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
+/**
+ * Entry points for the plugin
+ */
 final class ClubManager
 {
     //region Ctor
@@ -53,6 +57,15 @@ final class ClubManager
         add_submenu_page('ClubManager_admin_menu', 'ClubManager Entities', 'Entities', 'manage_options', 'clubManager_admin_entities_menu', array($this, 'admin_entities_page'));
         add_submenu_page('ClubManager_admin_menu', 'ClubManager Settings', 'Plugin Settings', 'manage_options', 'clubManager_admin_settings_menu', array($this, 'admin_settings_page'));
     }
+
+    /**
+     * Setup the current IocContainer
+     */
+    private function setup_ioccontainer() {
+        $this->ioc_container = new IocContainer();
+    }
+
+    // region WP callbacks
 
     /**
      * call to install triggers and setup connexion with the word press API
@@ -118,6 +131,8 @@ final class ClubManager
         write_log('Plugin uninstall');
 
     }
+
+    //endregion WP callbacks
 
     //region HTML
 
