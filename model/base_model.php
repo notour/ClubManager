@@ -15,6 +15,9 @@ require_once CD_PLUGIN_MODEL_PATH . 'table_descriptor.php';
 abstract class BaseModel extends BaseClass {
 
     //region fields
+
+    private $_id;
+
     //endregion fields
 
     //region ctor
@@ -22,12 +25,20 @@ abstract class BaseModel extends BaseClass {
     /**
      * constructor
      */
-    protected function __construct() {
+    protected function __construct(string $id) {
+        $this->_id = $id;
     }
 
     //endregion ctor
 
     //region properties
+
+    /**
+     * Gets the member unique id
+     */
+    public function get_id(): string {
+        return $this->_id;
+    }
 
     //endregion properties
 
@@ -36,32 +47,32 @@ abstract class BaseModel extends BaseClass {
     /**
      * 
      */
-    protected abstract static function _get_table_descriptor();
+    public abstract static function get_table_descriptor();
 
-    /**
-     * select all the elements in the database
-     */
-    public static function select_all(IIocContainer $ioc) {
+    // /**
+    //  * select all the elements in the database
+    //  */
+    // public static function select_all(IIocContainer $ioc) {
 
-        $db_handler = $ioc->get(IDBHandler::Traits);
+    //     $db_handler = $ioc->get(IDBHandler::Traits);
 
-        $caller_class = get_called_class();
-        $desc = $caller_class::_get_table_descriptor();
+    //     $caller_class = get_called_class();
+    //     $desc = $caller_class::_get_table_descriptor();
 
-        //select_all_items($desc, $table_alias, $where)
-        $items_row_data = $db_handler->select_query_items($desc, $desc->columns);
+    //     //select_all_items($desc, $table_alias, $where)
+    //     $items_row_data = $db_handler->select_query_items($desc, $desc->columns);
 
-        $items = array();
-        foreach ($items_row_data as $row) {
-            $items[] = new $caller_class($row);
-        }
+    //     $items = array();
+    //     foreach ($items_row_data as $row) {
+    //         $items[] = new $caller_class($row);
+    //     }
 
-        return $items;
-    }
+    //     return $items;
+    // }
 
-    public static function select_by_id(IIocContainer $ioc, guid $id) {
-        throw new Exception('Not implemented : select_by_id ' . self);
-    }
+    // public static function select_by_id(IIocContainer $ioc, guid $id) {
+    //     throw new Exception('Not implemented : select_by_id ' . self);
+    // }
 
     //region tools
 

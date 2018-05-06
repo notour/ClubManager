@@ -12,3 +12,6 @@ define( 'CD_PLUGIN_BUSINESS_PATH', dirname( __FILE__ )  . '/business/' );
 define( 'CD_PLUGIN_INTERFACES_PATH', dirname( __FILE__ )  . '/interfaces/' );
 define( 'CD_PLUGIN_TOOLS_PATH', dirname( __FILE__ )  . '/tools/' );
 define( 'CD_PLUGIN_CONFIG_PATH', dirname( __FILE__ )  . '/config/' );
+define( 'CD_PLUGIN_STRINGS_PATH', dirname( __FILE__ )  . '/strings/' );
+
+require_once CD_PLUGIN_STRINGS_PATH . 'error_messages.php';

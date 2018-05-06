@@ -20,7 +20,8 @@ final class Member extends BaseModel {
 
     const TABLE_NAME = 'member';
 
-    private $_id;
+    const TABLE_TRIGRAM = 'mem';
+
     private $_wp_id;
     private $_first_name;
     private $_last_name;
@@ -45,7 +46,9 @@ final class Member extends BaseModel {
                                 int $gender,
                                 int $wp_id,
                                 string $cif_id) {
-        $this->_id = $id;
+        
+        parent::__construct($id);
+
         $this->_first_name = $first_name;
         $this->_last_name = $last_name;
         $this->_birth_date = $birth_date;
@@ -56,13 +59,6 @@ final class Member extends BaseModel {
     }
 
     //endregion Ctor
-
-    /**
-     * Gets the member unique id
-     */
-    public function get_id(): string {
-        return $this->_id;
-    }
 
     /**
      * Gets the member first name
@@ -108,21 +104,21 @@ final class Member extends BaseModel {
     /**
      * @return table_descriptor Return the table description
      */
-    protected final static function _get_table_descriptor() {
+    public final static function get_table_descriptor() {
         $desc = Member::$desc;
         if (Member::$desc == NULL) {
 
             $desc = new TableDescriptor(Member::TABLE_NAME,
-                                        array('mem_id',
-                                              'mem_create',
-                                              'mem_first_name',
-                                              'mem_last_name',
-                                              'mem_birth_date',
-                                              'mem_birth_place',
-                                              'mem_gender',
-                                              'mem_cif_id',
-                                              'mem_wp_id'),
-                                        array('mem_id'));
+                                        array(Member::TABLE_TRIGRAM . '_id',
+                                                Member::TABLE_TRIGRAM . '_create',
+                                                Member::TABLE_TRIGRAM . '_first_name',
+                                                Member::TABLE_TRIGRAM . '_last_name',
+                                                Member::TABLE_TRIGRAM . '_birth_date',
+                                                Member::TABLE_TRIGRAM . '_birth_place',
+                                                Member::TABLE_TRIGRAM . '_gender',
+                                                Member::TABLE_TRIGRAM . '_cif_id',
+                                                Member::TABLE_TRIGRAM . '_wp_id'),
+                                        array(Member::TABLE_TRIGRAM . '_id'));
 
             Member::$desc = $desc;
         }

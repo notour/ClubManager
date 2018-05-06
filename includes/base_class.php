@@ -10,7 +10,7 @@ abstract class BaseClass {
     //region accessors
 
     // Check for property accessibility
-	protected function Accessible($name)
+	private final function _accessible_fct($name)
 	{
 		// Check for available accessors
 		if ((method_exists($this, "set_$name")) || 
@@ -20,16 +20,16 @@ abstract class BaseClass {
 		// // Inform dev why access to a field was denied
 		// throw new Exception((property_exists($this, $name) == false) 
 		// 			? "Property $name does not exist"
-		// 			: "Property $name not accessible");
+		// 			: "Property $name not _accessible_fct");
 		return FALSE;
 	}
     
     /**
      * getter
      */
-	public function __get($name) 
+	public final function __get($name) 
 	{
-		if ($this->Accessible($name))
+		if ($this->_accessible_fct($name))
 		{
 			// call get accessor
 			if (method_exists($this, "get_$name"))
@@ -42,9 +42,9 @@ abstract class BaseClass {
     /**
      * setter
      */
-	public function __set($name, $value)
+	public final function __set($name, $value)
 	{
-		if ($this->Accessible($name))
+		if ($this->_accessible_fct($name))
 		{
 			// call set accessor (if available)
 			if (method_exists($this, "set_$name"))

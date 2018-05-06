@@ -1,5 +1,9 @@
 <?php
 
+require_once dirname( __FILE__ ) . '/../clubmanager_const.php';
+
+require_once CD_PLUGIN_MODEL_PATH . 'table_descriptor.php';
+
 interface IDBHandler
 {
     const Traits = "IDBHandler";
@@ -33,14 +37,57 @@ interface IDBHandler
     public function install_if_needed($script_dir, $script_version, array $table_list, $force_install = FALSE);
 
     /**
-     * Apply a simple select query on one table 
+     * Apply a simple select query on one table
+     * 
+     * @param TableDescriptor $desc
+     *      descriptor of the target table
      */
-    public function select_query_items($desc, $columns, $where = NULL);
+    public function select_query_items(TableDescriptor $desc, $columns, $where = NULL);
 
     /**
      * return all the item ids of the table describe in $desc that follow the condition $where
+     * 
+     *  @param TableDescriptor $desc
+     *      descriptor of the target table
      */
-    public function query_item_ids($desc, $where = NULL);
+    public function query_item_ids(TableDescriptor $desc, $where = NULL);
+
+    /**
+     * return all the item ids of the table describe in $desc that follow the condition $where
+     * 
+     *  @param TableDescriptor $desc
+     *      descriptor of the target table
+     * 
+     * @param stdclass $ids
+     *      define all the ids values
+     */
+    public function get_by_ids(TableDescriptor $desc, stdclass $ids);
+
+    /**
+     * Insert a new item describe by the table description and the values pass in arguments
+     * 
+     * @param TableDescriptor $desc
+     *      descriptor of the target table
+     * 
+     * @param stdclass $values
+     *      define the values to insert
+     *  
+     */
+    public function insert(TableDescriptor $desc, stdclass $values);
+
+    /**
+     * Update the item describe by the table description and the values pass in arguments
+     * 
+     * @param TableDescriptor $desc
+     *      descriptor of the target table
+     * 
+     * @param stdclass $values
+     *      define the values to insert
+     * 
+     * @param stdclass $ids
+     *      define the ids of the object to update 
+     */
+    public function update(TableDescriptor $desc, stdclass $values, stdclass $ids = null);
 
     //endregion
 }

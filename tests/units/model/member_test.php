@@ -19,7 +19,7 @@ namespace tests\units
         /**
          * Test to construct <see cref="\Member" />
          */
-        public function testMember_construct() {
+        public function testMember_construct_property_getter() {
 
             $id = getGUID();
             $first_name = getGUID();

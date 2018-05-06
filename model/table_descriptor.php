@@ -21,8 +21,17 @@ final class TableDescriptor extends BaseClass {
 
     /**
      * Initialize the table descriptor
+     * 
+     * @param string $table_name
+     *      define the name of the table to instanciate
+     * 
+     * @param array $table_columns
+     *      define the name of the columns into the table
+     * 
+     * @param array $table_ids
+     *      define the ids used in the table to identify a row
      */
-    public function __construct($table_name, array $table_columns, array $table_ids) {
+    public function __construct(string $table_name, array $table_columns, array $table_ids) {
         
         if (count($table_ids) == 0 ){
             throw new Exception("$table_name : zero id defined");
@@ -85,4 +94,24 @@ final class TableDescriptor extends BaseClass {
 
     //endregion
 
+    //region Methods
+
+    /**
+     * generate en stdclass that map db properties and object properties
+     */
+    public function map(BaseModel $objInstance) {
+
+        $mapped = new stdclass();
+
+        foreach ($this->_columns as $value) {
+            $prop_name = str_replace($this->_table_alias . '_' , '', $value);
+            if (isset($objInstance->{$prop_name})) {
+                $mapped->{$value} = $objInstance->{$prop_name};
+            }
+        }
+        
+        return $mapped;
+    }
+
+    //endregion Methods
 }
