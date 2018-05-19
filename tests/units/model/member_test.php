@@ -3,7 +3,7 @@
 namespace tests\units 
 {
     require_once dirname(__FILE__) . '/../../utest_const.php';
-    require_once dirname(__FILE__) . '/../../../model/member.php';
+    require_once CD_PROJECT_PATH . '/model/member.php';
 
     require_once CD_PLUGIN_INCLUDES_PATH . 'guid_tool.php';
 
