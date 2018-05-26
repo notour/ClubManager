@@ -49,34 +49,5 @@ abstract class BaseModel extends BaseClass {
      */
     public abstract static function get_table_descriptor();
 
-    // /**
-    //  * select all the elements in the database
-    //  */
-    // public static function select_all(IIocContainer $ioc) {
-
-    //     $db_handler = $ioc->get(IDBHandler::Traits);
-
-    //     $caller_class = get_called_class();
-    //     $desc = $caller_class::_get_table_descriptor();
-
-    //     //select_all_items($desc, $table_alias, $where)
-    //     $items_row_data = $db_handler->select_query_items($desc, $desc->columns);
-
-    //     $items = array();
-    //     foreach ($items_row_data as $row) {
-    //         $items[] = new $caller_class($row);
-    //     }
-
-    //     return $items;
-    // }
-
-    // public static function select_by_id(IIocContainer $ioc, guid $id) {
-    //     throw new Exception('Not implemented : select_by_id ' . self);
-    // }
-
-    //region tools
-
-    //endregion tools
-
     //endrgion methods
 }

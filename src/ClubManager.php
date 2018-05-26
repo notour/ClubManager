@@ -12,8 +12,9 @@ License: GPL2
 require_once dirname( __FILE__ ) . '/clubmanager_const.php';
 
 require_once CD_PLUGIN_TOOLS_PATH . 'dev_tool.php';
-require_once CD_PLUGIN_INCLUDES_PATH . 'member_mngt.php';
 require_once CD_PLUGIN_INCLUDES_PATH . 'ioc_container.php';
+
+require_once CD_PLUGIN_VIEW_PATH . 'member_view.php';
 
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
@@ -36,6 +37,8 @@ final class ClubManager
      */
     private static $s_instance;
 
+    private $_member_view;
+
     //endregion
 
     //region Ctor
@@ -45,7 +48,12 @@ final class ClubManager
      */
     private function __construct() {
 
+
+        write_log("ClubManager start");
+        
         $this->setup_ioccontainer();
+
+        $this->_member_view = new MemberView($this->_ioc_container);
 
         register_activation_hook(__FILE__, array('ClubManager', 'activate'));
         register_deactivation_hook( __FILE__, array('ClubManager', 'deactivate'));
@@ -119,7 +127,7 @@ final class ClubManager
 
         //add_submenu_page('parent_key', 'page title', 'menu label', 'right_labels', 'key', function);
         add_submenu_page('ClubManager_admin_menu', 'ClubManager Admin', 'Global Admin', 'manage_options', 'clubManager_admin_menu', array($this, 'admin_main_page'));
-        add_submenu_page('ClubManager_admin_menu', 'ClubManager Members', 'Members', 'manage_options', 'clubManager_admin_members_menu', array($this, 'admin_members_page'));
+        add_submenu_page('ClubManager_admin_menu', 'ClubManager Members', 'Members', 'manage_options', 'clubManager_admin_members_menu', array($this->_member_view, 'index'));
         add_submenu_page('ClubManager_admin_menu', 'ClubManager Events', 'Events', 'manage_options', 'clubManager_admin_event_menu', array($this, 'admin_event_page'));
         add_submenu_page('ClubManager_admin_menu', 'ClubManager Entities', 'Entities', 'manage_options', 'clubManager_admin_entities_menu', array($this, 'admin_entities_page'));
         add_submenu_page('ClubManager_admin_menu', 'ClubManager Settings', 'Plugin Settings', 'manage_options', 'clubManager_admin_settings_menu', array($this, 'admin_settings_page'));
@@ -131,12 +139,18 @@ final class ClubManager
     private function setup_ioccontainer() {
         $this->_ioc_container = new IocContainer();
 
-        require_once CD_PLUGIN_INTERFACES_PATH . "idb_handler.php";
-        require_once CD_PLUGIN_INCLUDES_PATH . "wp_db_handler.php";
-
         global $wpdb;
-        
+        require_once CD_PLUGIN_INTERFACES_PATH . "idb_handler.php";
+        require_once CD_PLUGIN_PATH . "wordpress/wp_db_handler.php";
         $this->_ioc_container->store(IDBHandler::Traits, new WPDBHandler($this->_ioc_container, $wpdb));
+
+        require_once CD_PLUGIN_INTERFACES_PATH . "view/irenderer.php";
+        require_once CD_PLUGIN_PATH . "wordpress/wp_renderer.php";
+        $this->_ioc_container->store(IRenderer::Traits, new WPRenderer());
+
+        require_once CD_PLUGIN_INTERFACES_PATH . "view/iquery.php";
+        require_once CD_PLUGIN_PATH . "wordpress/wp_query.php";
+        $this->_ioc_container->store(IQuery::Traits, new WPQuery());
     }
 
     //region WP callbacks
@@ -216,13 +230,6 @@ final class ClubManager
 
     //region HTML
 
-    public function admin_members_page() {
-        $page_number = get_query_var( 'page_num', 1);
-        $member_search = get_query_var( 'search', '%');
-        $data['members'] = MemberMngt::load_members($page_number, $member_search);
-        echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/members.tpl.php', []);
-    }
-
     public function admin_main_page() {
         echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/admin.tpl.php', []);
     }
@@ -236,11 +243,10 @@ final class ClubManager
     }
 
     public function admin_settings_page() {
-        echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/entities.tpl.php', []);
+        echo render_template(CD_PLUGIN_TEMPLATE_PATH . '/admin/settings.tpl.php', []);
     }
 
     //endregion
-
     //endregion
 }
 

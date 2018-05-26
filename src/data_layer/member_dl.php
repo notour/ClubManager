@@ -6,8 +6,9 @@ require_once dirname( __FILE__ ) . '/../clubmanager_const.php';
 
 require_once CD_PLUGIN_DATALAYER_PATH . 'base_dl.php';
 
-require_once CD_PLUGIN_INTERFACES_PATH . 'imember_dl.php';
+require_once CD_PLUGIN_INTERFACES_PATH . 'data_layer/imember_dl.php';
 require_once CD_PLUGIN_INTERFACES_PATH . 'idb_handler.php';
+require_once CD_PLUGIN_INTERFACES_PATH . 'iioc_container.php';
 
 /**
  * Data Layer in change of managing storage of member and it's related informations
@@ -22,8 +23,8 @@ final class MemberDL extends BaseDL implements IMemberDL {
     /**
      * Initialize a new instance of the class <see cref="MemberDL" />
      */
-    public  final function __construct(IDBHandler $db_handler) {
-        parent::__construct($db_handler);
+    public  final function __construct(\IIocContainer $ioc) {
+        parent::__construct($ioc->get(IDBHandler::Traits));
     }
 
     //endregion CTOR
