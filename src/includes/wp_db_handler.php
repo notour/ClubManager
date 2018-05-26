@@ -37,7 +37,7 @@ class WPDBHandler implements IDBHandler
     //region Ctor
 
     /**
-     * Initialize a new instance of the class <see cref="CMDBTools" />
+     * Initialize a new instance of the class <see cref="WPDBHandler" />
      */
     public function __construct(IIocContainer $container, $wpdbInst) {
         require_once CD_PLUGIN_CONFIG_PATH . 'config_keys.php';

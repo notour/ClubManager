@@ -16,7 +16,7 @@ namespace tests\units
     /**
      * Class tested
      */
-    require_once CD_PROJECT_PATH . 'includes/ioc_container.class.php';
+    require_once CD_PROJECT_PATH . 'includes/ioc_container.php';
 
     /**
      * Unit test on <see cref="\IocContainer" />

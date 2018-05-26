@@ -11,7 +11,7 @@ namespace tests\units
      * Class tested
      */
     require_once CD_PROJECT_PATH . 'includes/wp_db_handler.php';
-    require_once CD_PROJECT_PATH . 'includes/ioc_container.class.php';
+    require_once CD_PROJECT_PATH . 'includes/ioc_container.php';
 
 
     /**

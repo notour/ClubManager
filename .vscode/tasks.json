@@ -6,7 +6,8 @@
         {
             "label": "Atoum Test",
             "type": "shell",
-            "command": "php ./atoum.phar -d tests"
+            "command": "php ./atoum.phar -d tests",
+            "problemMatcher": []
         }
     ],
     "presentation": {

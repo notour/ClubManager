@@ -22,12 +22,31 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
  */
 final class ClubManager
 {
+    //region Fields
+
+    /**
+     * IocContainer
+     * @var IocContainer
+     */
+    private $_ioc_container;
+
+    /**
+     * Singleton instance
+     * @var ClubManager
+     */
+    private static $s_instance;
+
+    //endregion
+
     //region Ctor
 
     /**
      * Entry point of the plugin used to connect this one will all the wordpress entry points
      */
-    public function __construct() {
+    private function __construct() {
+
+        $this->setup_ioccontainer();
+
         register_activation_hook(__FILE__, array('ClubManager', 'activate'));
         register_deactivation_hook( __FILE__, array('ClubManager', 'deactivate'));
 
@@ -40,7 +59,55 @@ final class ClubManager
 
     //endregion
 
+    //region Accessor
+
+    /**
+     * Get the singleton instance
+     */
+    public static function getInstance() {
+        return ClubManager::$s_instance;
+    }
+
+    //region IOC Accessors
+
+    /**
+     * Get the config value as setup in the /config/default.php file
+     * 
+     * @return value 
+     *      return the value setup in the config file associate to the specific key.
+     *      NULL if the key doesn't exist
+     */
+    public static function get_ioc_config(string $config_key) {
+        return ClubManager::$s_instance->_ioc_container->get_config($config_key);
+    }
+
+    /**
+     * Gets the specific instance store by the specific $Key
+     * 
+     * @param string $key
+     *      unique $key used to store and retreive a specific instance
+     * 
+     * @return object instance
+     *      return the specific instance associate to the specific key; if the key doesn't existing return NULL
+     */
+    public static function get_ioc_value(string $key) {
+        return ClubManager::$s_instance->_ioc_container->get($key);
+    }
+
+    //endregion
+
+    //endregion
+
     //region methods
+
+    /**
+     * Setup singleton instance
+     */
+    public static function Build() {
+        if (ClubManager::$s_instance == null) {
+            ClubManager::$s_instance = new ClubManager();
+        }
+    }
 
     /**
      * Declare the administration menu
@@ -62,10 +129,17 @@ final class ClubManager
      * Setup the current IocContainer
      */
     private function setup_ioccontainer() {
-        $this->ioc_container = new IocContainer();
+        $this->_ioc_container = new IocContainer();
+
+        require_once CD_PLUGIN_INTERFACES_PATH . "idb_handler.php";
+        require_once CD_PLUGIN_INCLUDES_PATH . "wp_db_handler.php";
+
+        global $wpdb;
+        
+        $this->_ioc_container->store(IDBHandler::Traits, new WPDBHandler($this->_ioc_container, $wpdb));
     }
 
-    // region WP callbacks
+    //region WP callbacks
 
     /**
      * call to install triggers and setup connexion with the word press API
@@ -92,7 +166,13 @@ final class ClubManager
     public static function install() {
         write_log('Plugin install');
 
-        require_once CD_PLUGIN_PATH . '/includes/db_tools.php';
+        require_once CD_PLUGIN_INTERFACES_PATH . "idb_handler.php";
+
+        /**
+         * Get the db handler
+         * @var IDBHandler
+         */
+        $db_handler = ClubManager::get_ioc_value(IDBHandler::Traits);
 
         $db_path = CD_PLUGIN_PATH . 'db/install';
         $db_script_dir = $db_path;
@@ -121,7 +201,7 @@ final class ClubManager
             'category_members'
         );
 
-        CMDBTools::install_if_needed($db_script_dir, $db_script_version, $db_table_list);
+        $db_handler->install_if_needed($db_script_dir, $db_script_version, $db_table_list);
     }
 
     /**
@@ -164,4 +244,4 @@ final class ClubManager
     //endregion
 }
 
-new ClubManager();
+ClubManager::Build();
