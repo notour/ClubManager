@@ -10,7 +10,23 @@
             },
             "label": "Atoum Test",
             "type": "shell",
-            "command": "php ./atoum.phar -d tests",
+            "command": "php ./atoum.phar --debug -d tests",
+            "problemMatcher": []
+        },
+        {
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "label": "Atoum Current File Test",
+            "type": "shell",
+            "command": "php",
+            "args": [
+                "./atoum.phar",
+                "--debug",
+                "-f",
+                "${file}"
+            ],
             "problemMatcher": []
         }
     ],
@@ -18,6 +34,6 @@
         "echo": true,
         "reveal": "always",
         "focus": false,
-        "panel": "shared"
+        "panel": "new",
     }
 }

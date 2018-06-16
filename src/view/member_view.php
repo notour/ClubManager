@@ -50,8 +50,6 @@ final class MemberView implements IView {
      * default method called when the user go to the member manager page
      */
     public function index() {
-
-        write_log("Index called");
         require_once CD_PLUGIN_INTERFACES_PATH . 'business/imember_mngt.php';
 
         /**

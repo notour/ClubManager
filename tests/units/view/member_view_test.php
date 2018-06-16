@@ -12,6 +12,7 @@ namespace tests\units
 
     /**
      * Unit Test class for the class <see cref="\MemberView" />
+     * 
      */
     class MemberView extends atoum\test {
 
@@ -30,7 +31,6 @@ namespace tests\units
          * Test to call the index method
          */
         public function testMemberView_index() {
-
             require_once CD_PROJECT_PATH . 'interfaces/view/irenderer.php';
             require_once CD_PROJECT_PATH . 'interfaces/view/iquery.php';
             require_once CD_PROJECT_PATH . 'interfaces/business/imember_mngt.php';
