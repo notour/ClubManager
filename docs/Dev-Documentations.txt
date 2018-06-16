@@ -7,18 +7,43 @@ https://codex.wordpress.org/Writing_a_Plugin
 
 Log:
 
-Define those parameters in wp-config:
+    Define those parameters in wp-config:
 
-define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_DISPLAY', false );
-define( 'WP_DEBUG_LOG', true );
+    define( 'WP_DEBUG', true );
+    define( 'WP_DEBUG_DISPLAY', false );
+    define( 'WP_DEBUG_LOG', true );
 
-use function write_log define in the file dev_tool.php
+    use function write_log define in the file dev_tool.php
 
-look log message into /wp-content/debug.log
-
+    look log message into /wp-content/debug.log
 
 Databases :
 
-https://codex.wordpress.org/Database_Description
-https://codex.wordpress.org/Creating_Tables_with_Plugins
+    https://codex.wordpress.org/Database_Description
+    https://codex.wordpress.org/Creating_Tables_with_Plugins
+
+DEBUG:
+
+    Ensure xdebug is setup on you environment
+
+    example : in php.ini
+    [xdebug]
+    zend_extension=php_xdebug-2.6.0-7.2-vc15-nts-x86_64.dll
+    xdebug.remote_enable=1
+    xdebug.remote_autostart = 1
+    xdebug.remote_host=localhost
+    xdebug.remote_port=9000
+
+    Debug in vscode : 
+
+        -   F5 will launch atoum unit test on the current file with debugger attached
+            *   To debug a unit test class you need to setup the tag '@engine inline' in the class comment
+            *   Multiple error are raised because atoum is a phar to missing file is normal
+            *   Advise set a break point at the entry of this tesst method
+
+        -   Ctrl + Shipt + P => launch test will permit you to select all test or current file : WITHOUT the debugger attached
+
+        -   Atoum display dump info only when the argument --debug is pass (F5 pass this arguments)
+
+    Attention:
+        * write_log could cause unknown error for unknown reason
