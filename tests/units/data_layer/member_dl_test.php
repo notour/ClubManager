@@ -7,6 +7,7 @@ namespace tests\units
 
     require_once CD_PLUGIN_INTERFACES_PATH . 'idb_handler.php';
     require_once CD_PLUGIN_INCLUDES_PATH . 'guid_tool.php';
+    require_once CD_PLUGIN_INCLUDES_PATH . 'ioc_container.php';
 
     require_once CD_PLUGIN_DATALAYER_PATH . 'member_dl.php';
     
@@ -22,12 +23,15 @@ namespace tests\units
         /**
          * Test to construct a new <see cref="\Member" />
          */
-        public function testMemberDL_constuct() {
+        public function testMemberDL__constuct() {
 
             $this->mockGenerator->generate('\IDBHandler');
 
             $dbHandlerMock = new \mock\IDBHandler;
-            $memberDL = new \MemberDL($dbHandlerMock);
+            $ioc = new \IocContainer();
+            $ioc->store(\IDBHandler::Traits, $dbHandlerMock);
+
+            $memberDL = new \MemberDL($ioc);
 
             $this
                 ->object($memberDL)
@@ -46,8 +50,10 @@ namespace tests\units
             $dbHandlerMock = new \mock\IDBHandler;
             $dbHandlerMock->getMockController()->get_by_ids = function($desc, $ids) { return NULL; };
 
-            $memberDL = new \MemberDL($dbHandlerMock);
+            $ioc = new \IocContainer();
+            $ioc->store(\IDBHandler::Traits, $dbHandlerMock);
 
+            $memberDL = new \MemberDL($ioc);
 
             $this
                 ->object($memberDL)
@@ -84,7 +90,10 @@ namespace tests\units
             $dbHandlerMock = new \mock\IDBHandler;
             $dbHandlerMock->getMockController()->get_by_ids = function($desc, $ids) use($member) { return $member; };
 
-            $memberDL = new \MemberDL($dbHandlerMock);
+            $ioc = new \IocContainer();
+            $ioc->store(\IDBHandler::Traits, $dbHandlerMock);
+
+            $memberDL = new \MemberDL($ioc);
 
 
             $this

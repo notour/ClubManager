@@ -16,3 +16,6 @@ define( 'CD_PLUGIN_STRINGS_PATH', dirname( __FILE__ )  . '/strings/' );
 define( 'CD_PLUGIN_VIEW_PATH', dirname( __FILE__ )  . '/view/' );
 
 require_once CD_PLUGIN_STRINGS_PATH . 'error_messages.php';
+
+// if DEV
+require_once CD_PLUGIN_TOOLS_PATH . 'dev_tool.php';
